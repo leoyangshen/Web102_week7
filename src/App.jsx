@@ -1,3 +1,4 @@
+import "./App.css"
 import React, { useState, useEffect, useMemo } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useParams, useNavigate } from 'react-router-dom';
 import {
@@ -102,6 +103,16 @@ const PostTitleLengthChart = ({ posts }) => {
 
   const PIE_COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28DFF', '#FF6B6B', '#6A0572', '#2C3E50'];
 
+	// NEW: Prepare legend payload with custom colors
+  const legendPayload = useMemo(() => {
+    return data.map((entry, index) => ({
+      id: entry.range, // Unique ID for the legend item
+      value: entry.range, // Text to display in the legend
+      type: 'square', // Type of icon (e.g., 'square', 'circle')
+      color: PIE_COLORS[index % PIE_COLORS.length], // The color for this legend item
+    }));
+  }, [data, PIE_COLORS]); // Depend on data and PIE_COLORS
+
   return (
     <div className="bg-white p-6 rounded-xl shadow-lg h-[400px] flex flex-col">
       <h3 className="text-xl font-semibold text-gray-700 mb-4 text-center">Post Title Length Distribution</h3>
@@ -125,7 +136,9 @@ const PostTitleLengthChart = ({ posts }) => {
             }
           </Pie>
           <Tooltip />
-          <Legend wrapperStyle={{ paddingTop: '20px' }} />
+	  {/* <Legend wrapperStyle={{ paddingTop: '20px' }} /> */}
+	  {/* UPDATED: Pass custom payload to the Legend */}
+          <Legend wrapperStyle={{ paddingTop: '20px' }} payload={legendPayload} />
         </PieChart>
       </ResponsiveContainer>
     </div>
@@ -279,8 +292,8 @@ function App() {
     <Router>
       <div className="flex min-h-screen bg-gray-100 font-inter">
         {/* Tailwind CSS and Font Import */}
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+	{/*  <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" /> */}
 
         <Sidebar />
         <main className="flex-grow flex flex-col">
